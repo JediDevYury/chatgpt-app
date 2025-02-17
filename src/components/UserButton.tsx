@@ -8,7 +8,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-
 import { useSession, signIn, signOut } from "next-auth/react";
 
 function getFirstTwoCapitalLetters(str?: string | null) {
@@ -25,7 +24,7 @@ export default function UserButton() {
 		  <DropdownMenu>
 			<DropdownMenuTrigger asChild>
 			  <Avatar>
-				<AvatarImage src={session?.user?.image!} />
+				<AvatarImage src={session?.user?.image ?? ""} />
 				<AvatarFallback>
 				  {getFirstTwoCapitalLetters(session?.user?.name)}
 				</AvatarFallback>
