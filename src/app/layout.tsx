@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import { SessionProvider } from "@/components/SessionProvider";
+import UserButton from "@/components/UserButton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,12 +26,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+    <SessionProvider>
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <header className="text-amber font-bold bg-emerald-400 text-2xl p-2 mb-3 rounded-b-lg shadow-gray-700 shadow-lg">
-          <div className="my-4 mx-4 flex gap-4 justify-end">
+        <header className="flex items-center py-4 px-4 gap-4 justify-between text-amber font-bold bg-emerald-400 text-2xl p-2 mb-3 rounded-b-lg shadow-gray-700 shadow-lg">
+          <div>
+            <UserButton />
+          </div>
+          <div className="flex gap-4">
             <Link href="/">Home</Link>
             <Link href="/about">About</Link>
           </div>
@@ -39,5 +45,6 @@ export default function RootLayout({
         </div>
       </body>
     </html>
+    </SessionProvider>
   );
 }
