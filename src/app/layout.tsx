@@ -41,7 +41,7 @@ export default function RootLayout({
           </div>
         </header>
         <div className="flex flex-col md:flex-row">
-          <div className="flex-grow">{children}</div>
+          <div className="flex-grow mx-[100px] my-[50px]">{children}</div>
         </div>
       </body>
     </html>
