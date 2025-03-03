@@ -1,50 +1,66 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { Inter } from "next/font/google";
 import Link from "next/link";
-import { SessionProvider } from "@/components/SessionProvider";
+import { SessionProvider } from "next-auth/react";
+
+import { signIn, signOut, auth } from "@/auth.config";
+
 import UserButton from "@/components/UserButton";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import "./globals.css";
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "NextJS ChatGPT Clone",
-  description: "A chatbot clone using NextJS, Shadcn, Lucid, and Vercel AI SDK",
+  title: "NextJS ChatGPT App",
+  description: "ChatGPT brought to you by NextJS",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+  if (session?.user) {
+    // TODO: Look into https://react.dev/reference/react/experimental_taintObjectReference
+    // filter out sensitive data before passing to client.
+    session.user = {
+      name: session.user.name,
+      email: session.user.email,
+      image: session.user.image,
+    };
+  }
+
   return (
-    <SessionProvider>
+    <SessionProvider basePath="/api/auth" session={session}>
       <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <header className="flex items-center py-4 px-4 gap-4 justify-between text-amber font-bold bg-emerald-400 text-2xl p-2 mb-3 rounded-b-lg shadow-gray-700 shadow-lg">
-          <div>
-            <UserButton />
+        <body className={`${inter.className} px-2 md:px-5`}>
+          <header className="text-white font-bold bg-green-900 text-2xl p-2 mb-3 rounded-b-lg shadow-gray-700 shadow-lg flex">
+            <div className="flex flex-grow">
+              <Link href="/">GPT Chat</Link>
+              <Link href="/about" className="ml-5 font-light">
+                About
+              </Link>
+            </div>
+            <div>
+              <UserButton
+                onSignIn={async () => {
+                  "use server";
+                  await signIn();
+                }}
+                onSignOut={async () => {
+                  "use server";
+                  await signOut();
+                }}
+              />
+            </div>
+          </header>
+          <div className="flex flex-col md:flex-row">
+            <div className="flex-grow">{children}</div>
           </div>
-          <div className="flex gap-4">
-            <Link href="/">Home</Link>
-            <Link href="/about">About</Link>
-          </div>
-        </header>
-        <div className="flex flex-col md:flex-row">
-          <div className="flex-grow mx-[100px] my-[50px]">{children}</div>
-        </div>
-      </body>
-    </html>
+        </body>
+      </html>
     </SessionProvider>
   );
 }
