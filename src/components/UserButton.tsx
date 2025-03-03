@@ -1,5 +1,5 @@
 "use client";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,13 +15,12 @@ function getFirstTwoCapitalLetters(str?: string | null) {
   return match ? match.slice(0, 2).join("") : "GT";
 }
 
-export default function UserButton({
-  onSignIn,
-  onSignOut,
-}: {
+type UserButtonProps = {
   onSignIn: () => Promise<void>;
   onSignOut: () => Promise<void>;
-}) {
+};
+
+export default function UserButton({ onSignIn, onSignOut }: UserButtonProps) {
   const { data: session, status } = useSession();
 
   return (
@@ -30,7 +29,7 @@ export default function UserButton({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Avatar>
-              <AvatarImage src={session?.user?.image!} />
+              <AvatarImage src={session?.user?.image ?? ""} />
               <AvatarFallback>
                 {getFirstTwoCapitalLetters(session?.user?.name)}
               </AvatarFallback>
