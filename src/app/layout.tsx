@@ -13,7 +13,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "NextJS ChatGPT App",
-  description: "ChatGPT brought to you by NextJS",
+  description: "ChatGPT brought to you",
 };
 
 export default async function RootLayout({
