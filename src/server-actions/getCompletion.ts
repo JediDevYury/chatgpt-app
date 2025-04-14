@@ -1,6 +1,6 @@
 "use server";
 import { auth } from "@/auth.config";
-import { createChat, updateChat } from "@/db";
+import { createChat, getMessages, updateChat } from "@/db";
 import type { Role } from "@/types";
 import OpenAI from "openai";
 
@@ -22,13 +22,16 @@ export async function getCompletion(
     messages: messageHistory,
   });
 
-  const messages = [
-    ...messageHistory,
-    response.choices[0].message as unknown as {
-      role: Role;
-      content: string;
-    },
-  ];
+  if (!response.choices[0].message) {
+    throw new Error("No response from OpenAI");
+  }
+
+  const assistantMessage = {
+    role: response.choices[0].message.role as Role,
+    content: response.choices[0].message.content || "",
+  };
+
+  const messages = [...messageHistory, assistantMessage];
 
   let chatId = id;
 
@@ -43,9 +46,7 @@ export async function getCompletion(
   }
 
   return {
-    messages,
+    messages: await getMessages(chatId),
     id: chatId,
   };
 }
-
-export type { Role };
