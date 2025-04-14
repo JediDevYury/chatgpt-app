@@ -8,7 +8,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { useSession } from "next-auth/react";
+
+import { useSession, signOut } from "next-auth/react";
 
 function getFirstTwoCapitalLetters(str?: string | null) {
   const match = (str || "").match(/[A-Z]/g);
@@ -17,14 +18,13 @@ function getFirstTwoCapitalLetters(str?: string | null) {
 
 type UserButtonProps = {
   onSignIn: () => Promise<void>;
-  onSignOut: () => Promise<void>;
 };
 
-export default function UserButton({ onSignIn, onSignOut }: UserButtonProps) {
+export default function UserButton({ onSignIn }: UserButtonProps) {
   const { data: session, status } = useSession();
 
   return (
-    <div>
+    <div className="relative">
       {status === "authenticated" && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -37,9 +37,7 @@ export default function UserButton({ onSignIn, onSignOut }: UserButtonProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem
-              onClick={() => {
-                onSignOut();
-              }}
+              onClick={() => signOut()}
             >
               Sign Out
             </DropdownMenuItem>

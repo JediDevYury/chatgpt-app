@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import Link from "next/link";
 import { SessionProvider } from "next-auth/react";
 
-import { signIn, signOut, auth } from "@/auth.config";
+import { signIn, auth } from "@/auth.config";
 
 import UserButton from "@/components/UserButton";
 
@@ -35,26 +35,20 @@ export default async function RootLayout({
   return (
     <SessionProvider basePath="/api/auth" session={session}>
       <html lang="en">
-        <body className={`${inter.className} px-2 md:px-5`}>
-          <header className="text-white font-bold bg-green-900 text-2xl p-2 mb-3 rounded-b-lg shadow-gray-700 shadow-lg flex">
+        <body className="mx-2 md:mx-5">
+          <header className="text-white font-bold bg-green-900 text-2xl mt-4 p-2 mb-3 rounded-b-lg shadow-gray-700 shadow-lg flex">
             <div className="flex flex-grow">
               <Link href="/">GPT Chat</Link>
               <Link href="/about" className="ml-5 font-light">
                 About
               </Link>
             </div>
-            <div>
-              <UserButton
-                onSignIn={async () => {
-                  "use server";
-                  await signIn();
-                }}
-                onSignOut={async () => {
-                  "use server";
-                  await signOut();
-                }}
-              />
-            </div>
+            <UserButton
+              onSignIn={async () => {
+                "use server";
+                await signIn();
+              }}
+            />
           </header>
           <div className="flex flex-col md:flex-row">
             <div className="flex-grow">{children}</div>
